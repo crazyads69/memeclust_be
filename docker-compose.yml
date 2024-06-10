@@ -1,0 +1,34 @@
+version: '3'
+services:
+  service_name:
+    container_name: service_name
+    restart: always
+    build: .
+    volumes:
+      - ./app:/app
+    ports:
+      - '8080:8080' # Change 8080 to your port
+    env_file:
+      - .envs/.app.env
+    networks:
+      - service_network
+
+    # Uncomment this if you want to use GPU in your service
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ['0'] # Change this to your GPU ID
+    #           capabilities: [gpu]
+
+networks:
+  service_network:
+  # Uncomment the following lines if you're facing with docker network
+  # my_network:
+  #     driver: bridge
+  #     ipam:
+  #         driver: default
+  #         config:
+  #             - subnet: "192.168.0.0/24"
+  #               gateway: "192.168.0.1"

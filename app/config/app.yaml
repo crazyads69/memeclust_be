@@ -1,0 +1,22 @@
+app:
+  host: 0.0.0.0
+  port: 8080
+  workers: 1
+
+  mode: ${oc.env:mode,DEVELOPMENT} # DEVELOPMENT or PRODUCTION
+
+  docs_url: '/docs' # set to None to disable
+  redoc_url: '/redoc'
+
+  logdir: './log'
+
+  # CORS
+  cors:
+    enable: false
+    origins:
+      - '*'
+    allow_credentials: true
+    methods:
+      - '*'
+    headers:
+      - '*'
