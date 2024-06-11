@@ -13,7 +13,7 @@ from routers.auth import auth_controller
 from utils.config_utils import get_config
 from utils.logger_utils import get_logger, log_request
 
-dotenv.load_dotenv()
+
 config = get_config()
 logger = get_logger()
 
@@ -107,8 +107,9 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        app,
+        "main:app",
         host=config.app.host,
         port=config.app.port,
         workers=config.app.workers if config.app.mode == MODE.PRODUCTION else 1,
+        reload=config.app.reload if config.app.mode == MODE.DEVELOPMENT else False,
     )

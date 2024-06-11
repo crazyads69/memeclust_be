@@ -12,7 +12,11 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         # Log client
         client = request.client
-        logger.info(f"Client: {client.host}:{client.port}")
+        # Check if client is not None
+        if client is not None:
+            logger.info(f"Client: {client.host}:{client.port}")
+        else:
+            logger.info("Client information is not available")
 
         # Log user agent
         user_agent = request.headers.get("user-agent")

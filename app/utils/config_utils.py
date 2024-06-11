@@ -5,7 +5,7 @@ import dotenv
 from hydra import compose, initialize
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-dotenv.load_dotenv()
+dotenv.load_dotenv(r".envs/.app.env")
 
 
 def parse_value(value):

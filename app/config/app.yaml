@@ -4,12 +4,11 @@ app:
   workers: 1
 
   mode: ${oc.env:mode,DEVELOPMENT} # DEVELOPMENT or PRODUCTION
-
   docs_url: '/docs' # set to None to disable
   redoc_url: '/redoc'
 
   logdir: './log'
-
+  reload: true
   # CORS
   cors:
     enable: false
