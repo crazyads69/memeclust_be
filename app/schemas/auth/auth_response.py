@@ -13,3 +13,9 @@ class LoginResponse(BaseModel):
     access_token: str
     refresh_token: str
     user: UserResponse
+
+
+class RegisterReponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    user: UserResponse

@@ -4,7 +4,7 @@ from fastapi import APIRouter
 import supabase
 from schemas.response import APIResponse
 from utils.logger_utils import get_logger
-from services.auth_svc import AuthService
+from app.services.auth.auth_svc import AuthService
 from .auth_schemas import LoginRequestBody, SignUpRequestBody
 from libs.supabse import Supabase
 
@@ -15,17 +15,17 @@ router = APIRouter()
 supabase_client = Supabase().create_client()
 
 
-@router.post("/login")
+@router.post("/login", tags=["auth"])
 async def login(req: LoginRequestBody) -> APIResponse:
     logger.info(
-        "User login with req:\n%s" % req.model_dump_json(indent=2),
+        "User login with request:\n%s" % req.model_dump_json(indent=2),
     )
     # Call service
     resp = await AuthService(supabase=supabase_client).login(
         email=req.email, password=req.password
     )
     logger.info(
-        "User login with resp:\n%s" % json.dumps(resp, indent=2),
+        "User login with response:\n%s" % json.dumps(resp, indent=2),
     )
 
     if resp is None:
@@ -44,10 +44,10 @@ async def login(req: LoginRequestBody) -> APIResponse:
     )
 
 
-@router.post("/signup")
+@router.post("/signup", tags=["auth"])
 async def signup(req: SignUpRequestBody) -> APIResponse:
     logger.info(
-        "User signup with req:\n%s" % req.model_dump_json(indent=2),
+        "User signup with request:\n%s" % req.model_dump_json(indent=2),
     )
 
     # Call service
@@ -58,12 +58,18 @@ async def signup(req: SignUpRequestBody) -> APIResponse:
         last_name=req.last_name,
     )
 
-    # Convert to object
-    resp = resp.model_dump_json(indent=2)
-
     logger.info(
-        "User signup with resp:\n%s" % json.dumps(resp, indent=2),
+        "User signup with response:\n%s" % json.dumps(resp, indent=2),
     )
+
+    if resp is None:
+        return APIResponse(
+            status=401,
+            message="Signup failed",
+            message_vi="Đăng ký thất bại",
+            data=None,
+        )
+
     return APIResponse(
         status=200,
         message="Signup successfully",
