@@ -4,8 +4,7 @@ from supabase import Client
 from schemas.response import APIResponse
 from utils.logger_utils import get_logger
 from services.auth.auth_svc import AuthService
-from .auth_schemas import LoginRequestBody, SignUpRequestBody
-from libs.supabse import Supabase
+from .auth_schemas import LoginRequestBody, SignUpRequestBody, RefreshTokenBody
 from deps.deps import init_supabase_client
 
 logger = get_logger()
@@ -76,5 +75,38 @@ async def signup(
         status=200,
         message="Signup successfully",
         message_vi="Đăng ký thành công",
+        data=resp,
+    )
+
+
+@router.post("/refresh-token")
+async def refresh_token(
+    req: RefreshTokenBody, supabase_client: Client = Depends(init_supabase_client)
+) -> APIResponse:
+    logger.info(
+        "User refresh token with request:\n%s" % req.model_dump_json(indent=2),
+    )
+
+    # Call service
+    resp = await AuthService(supabase=supabase_client).refresh_token(
+        refresh_token=req.refresh_token
+    )
+
+    logger.info(
+        "User refresh token with response:\n%s" % json.dumps(resp, indent=2),
+    )
+
+    if resp is None:
+        return APIResponse(
+            status=401,
+            message="Refresh token failed",
+            message_vi="Lấy lại token thất bại",
+            data=None,
+        )
+
+    return APIResponse(
+        status=200,
+        message="Refresh token successfully",
+        message_vi="Lấy lại token thành công",
         data=resp,
     )

@@ -7,7 +7,12 @@ from libs.supabse import Supabase
 from supabase import Client
 from gotrue import User
 from utils.logger_utils import get_logger
-from schemas.auth.auth_response import LoginResponse, UserResponse, RegisterReponse
+from schemas.auth.auth_response import (
+    LoginResponse,
+    UserResponse,
+    RegisterReponse,
+    RefreshResponse,
+)
 
 logger = get_logger()
 
@@ -66,6 +71,28 @@ class AuthService:
                 email=user.user.email if user.user.email is not None else "",
                 first_name=user.user.user_metadata.get("first_name", ""),
                 last_name=user.user.user_metadata.get("last_name", ""),
+            ),
+        )
+
+        # Encode response to json compatible
+        response = jsonable_encoder(data)
+        return response
+
+    # Refresh token service
+    async def refresh_token(self, refresh_token: str) -> Response:
+        res = self.supabase.auth.refresh_session(refresh_token)
+
+        if res.user is None or res.session is None:
+            raise Exception("Refresh token failed")
+
+        data = RefreshResponse(
+            access_token=res.session.access_token,
+            refresh_token=res.session.refresh_token,
+            user=UserResponse(
+                id=res.user.id,
+                email=res.user.email if res.user.email is not None else "",
+                first_name=res.user.user_metadata.get("first_name", ""),
+                last_name=res.user.user_metadata.get("last_name", ""),
             ),
         )
 
