@@ -7,7 +7,7 @@ from libs.supabse import Supabase
 from supabase import Client
 from gotrue import User
 from utils.logger_utils import get_logger
-from app.schemas.auth.auth_response import LoginResponse, UserResponse, RegisterReponse
+from schemas.auth.auth_response import LoginResponse, UserResponse, RegisterReponse
 
 logger = get_logger()
 
@@ -46,6 +46,7 @@ class AuthService:
     async def signup(
         self, email: str, password: str, first_name: str, last_name: str
     ) -> User:
+
         user = self.supabase.auth.sign_up(
             {
                 "email": email,

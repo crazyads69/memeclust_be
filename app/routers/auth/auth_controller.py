@@ -1,22 +1,22 @@
 import json
-
-from fastapi import APIRouter
-import supabase
+from fastapi import APIRouter, Depends
+from supabase import Client
 from schemas.response import APIResponse
 from utils.logger_utils import get_logger
-from app.services.auth.auth_svc import AuthService
+from services.auth.auth_svc import AuthService
 from .auth_schemas import LoginRequestBody, SignUpRequestBody
 from libs.supabse import Supabase
+from deps.deps import init_supabase_client
 
 logger = get_logger()
 
 router = APIRouter()
 
-supabase_client = Supabase().create_client()
 
-
-@router.post("/login", tags=["auth"])
-async def login(req: LoginRequestBody) -> APIResponse:
+@router.post("/login")
+async def login(
+    req: LoginRequestBody, supabase_client: Client = Depends(init_supabase_client)
+) -> APIResponse:
     logger.info(
         "User login with request:\n%s" % req.model_dump_json(indent=2),
     )
@@ -44,8 +44,10 @@ async def login(req: LoginRequestBody) -> APIResponse:
     )
 
 
-@router.post("/signup", tags=["auth"])
-async def signup(req: SignUpRequestBody) -> APIResponse:
+@router.post("/signup")
+async def signup(
+    req: SignUpRequestBody, supabase_client: Client = Depends(init_supabase_client)
+) -> APIResponse:
     logger.info(
         "User signup with request:\n%s" % req.model_dump_json(indent=2),
     )
